@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ladoc
 
-## Getting Started
+Ein moderner, kollaborativer Dokumenten-Editor im Browser. Schreibe Abschlussarbeiten, Berichte, Lebensläufe, Rechnungen und mehr mit einer Word-ähnlichen Oberfläche — und erhalte eine professionelle PDF-Ausgabe dank Typst als Rendering-Engine.
 
-First, run the development server:
+## Features
+
+- **Visueller Editor** mit TipTap v3 — Fett, Kursiv, Überschriften, Listen, Tabellen, Bilder, Formeln, Fußnoten, Zitate, Inhaltsverzeichnis
+- **Live-PDF-Vorschau** — kompiliert in Echtzeit im Browser via Typst WASM
+- **Professionelle Vorlagen** — Abschlussarbeit, Lebenslauf, Brief (DIN 5008), Bericht, Präsentation, Buch, Rechnung, Sitzungsprotokoll
+- **Split-Ansicht** — visueller Editor, Typst-Code, oder beides nebeneinander
+- **Auto-Save** — Änderungen werden automatisch gespeichert
+- **Versionshistorie** — frühere Zustände wiederherstellen
+- **Authentifizierung** — E-Mail/Passwort, GitHub, Google (NextAuth v5)
+- **Mehrsprachig** — Deutsch & Englisch (next-intl)
+- **Export** — PDF, Typst-Quellcode
+
+## Tech-Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- **Tailwind CSS 4**
+- **TipTap v3** für den Editor
+- **Typst WASM** (`@myriaddreamin/typst.ts`) für die PDF-Kompilierung
+- **Prisma 7** + **PostgreSQL**
+- **NextAuth v5** für Authentifizierung
+- **Yjs** + **Hocuspocus** (optional) für Echtzeit-Kollaboration
+
+## Einrichtung
+
+### Voraussetzungen
+
+- Node.js 20+
+- PostgreSQL-Datenbank
+- npm, pnpm oder yarn
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Abhängigkeiten installieren
+npm install
+
+# Umgebungsvariablen einrichten (.env)
+cp .env.example .env
+# Dann DATABASE_URL, AUTH_SECRET, etc. eintragen
+
+# Datenbank migrieren
+npx prisma migrate dev
+
+# Prisma Client generieren
+npx prisma generate
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Umgebungsvariablen
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL="postgresql://user:pass@localhost:5432/ladoc"
+AUTH_SECRET="dein-geheimer-schluessel"
+AUTH_GITHUB_ID=""
+AUTH_GITHUB_SECRET=""
+AUTH_GOOGLE_ID=""
+AUTH_GOOGLE_SECRET=""
+NEXT_PUBLIC_COLLAB_URL="ws://localhost:1234"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Entwicklungsserver starten
 
-## Learn More
+```bash
+# Next.js Dev-Server (http://localhost:3000)
+npm run dev
 
-To learn more about Next.js, take a look at the following resources:
+# Optional: Hocuspocus Kollaborations-Server (ws://localhost:1234)
+npm run collab
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Projektstruktur
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                  # Next.js App Router
+│   ├── (auth)/           # Login, Register
+│   ├── api/              # API-Routen
+│   ├── dashboard/        # Dokumentenübersicht
+│   ├── editor/[id]/      # Editor
+│   └── page.tsx          # Landing Page
+├── components/
+│   ├── editor/           # Editor, Toolbar, Dialoge
+│   ├── dashboard/        # Dashboard-UI
+│   └── templates/        # Vorlagen-Galerie
+├── hooks/                # React Hooks (useEditor, useAutoSave, ...)
+├── lib/
+│   ├── auth.ts           # NextAuth-Konfiguration
+│   ├── db.ts             # Prisma Client
+│   ├── editor/           # Custom TipTap-Extensions
+│   ├── templates/        # Vorlagen-Inhalte
+│   └── typst/            # Typst-Serializer & WASM-Worker
+├── stores/               # Zustand Stores
+└── generated/prisma/     # Prisma-generierter Client
 
-## Deploy on Vercel
+server/
+└── collaboration.ts      # Hocuspocus-Server
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+messages/                 # i18n (de.json, en.json)
+prisma/schema.prisma      # Datenbankschema
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Vorlagen
+
+ladoc enthält 8 professionelle Vorlagen:
+
+| Vorlage | Beschreibung |
+|---|---|
+| **Abschlussarbeit** | Titelseite, Abstract, 6 Kapitel, Literaturverzeichnis |
+| **Lebenslauf** | Profil, Berufserfahrung, Ausbildung, Skills, Zertifikate |
+| **Brief** | DIN-5008-konformer Geschäftsbrief |
+| **Bericht** | Executive Summary, Inhaltsverzeichnis, Analyse, Empfehlungen |
+| **Präsentation** | Folien im Querformat mit Agenda und Inhaltsfolien |
+| **Buch** | Schmutztitel, Haupttitel, Widmung, Kapitel, Nachwort |
+| **Rechnung** | Absender, Empfänger, Positionen, USt, Bankverbindung |
+| **Sitzungsprotokoll** | Teilnehmer, TOPs, Beschlüsse, Aufgabenliste |
+
+## Lizenz
+
+MIT
