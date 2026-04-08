@@ -114,18 +114,13 @@ The goal is simple: **professional documents without friction.** Whether you are
 
 ## 🎬 Demo
 
-> _Screenshots and a live demo are coming soon._
+### Home
 
-```
-┌────────────────────────────────────────────────────────────┐
-│  ladoc  │  My Documents   🔍 Search   + New Document      │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│   📄 Thesis             📄 Resume          📄 Invoice      │
-│   Last: today           Last: yesterday    Last: 2d ago    │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
-```
+![ladoc home screen](./public/home.png)
+
+### Editor
+
+![ladoc editor screen](./public/editor.png)
 
 ---
 
