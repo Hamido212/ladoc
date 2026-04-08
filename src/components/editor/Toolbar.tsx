@@ -11,6 +11,7 @@ import { VersionHistory } from './VersionHistory';
 import { FootnoteDialog } from './FootnoteDialog';
 import { MathEditor } from '../math/MathEditor';
 import { CitationSearch } from '../citations/CitationSearch';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import Link from 'next/link';
 import {
   Bold,
@@ -502,6 +503,9 @@ export function Toolbar({ editor }: ToolbarProps) {
           <FileCode className={iconSize} />
         </ToolbarButton>
       </div>
+
+      {/* Language */}
+      <LanguageSwitcher />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Sparkles, Eye, Users, FileDown } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 export default function AuthLayout({
   children,
@@ -44,7 +45,10 @@ export default function AuthLayout({
       </div>
 
       {/* Right form area */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 px-6">
+      <div className="relative flex-1 flex items-center justify-center bg-gray-50 px-6">
+        <div className="absolute right-4 top-4">
+          <LanguageSwitcher variant="pill" />
+        </div>
         {children}
       </div>
     </div>

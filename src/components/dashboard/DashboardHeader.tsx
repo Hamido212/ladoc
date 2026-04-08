@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { signOut } from 'next-auth/react';
 import { LogOut, Search, Sparkles } from 'lucide-react';
 import { NewDocumentDialog } from './NewDocumentDialog';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 interface DashboardHeaderProps {
   user: {
@@ -80,6 +81,9 @@ export function DashboardHeader({
 
           {/* New Document */}
           {viewMode === 'active' && <NewDocumentDialog />}
+
+          {/* Language */}
+          <LanguageSwitcher />
 
           {/* User */}
           <div className="ml-1 flex items-center gap-2">

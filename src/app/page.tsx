@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import {
   Eye,
   Users,
@@ -69,6 +70,7 @@ export default async function LandingPage() {
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSwitcher variant="pill" />
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
