@@ -24,6 +24,7 @@ interface EditorContainerProps {
   documentId?: string;
   extraExtensions?: Parameters<typeof useLadocEditor>[2];
   collabStatus?: 'connecting' | 'connected' | 'disconnected';
+  collabSynced?: boolean;
   connectedUsers?: number;
   awarenessUsers?: AwarenessUser[];
 }
@@ -33,6 +34,7 @@ export function EditorContainer({
   documentId,
   extraExtensions,
   collabStatus,
+  collabSynced,
   connectedUsers,
   awarenessUsers,
 }: EditorContainerProps = {}) {
@@ -40,6 +42,7 @@ export function EditorContainer({
   const { viewMode, typstSource, setTypstSource } = useEditorStore();
   const { setDocumentId } = useDocumentStore();
   const prevViewModeRef = useRef(viewMode);
+  const hasSeededCollaborationRef = useRef(false);
 
   const editor = useLadocEditor(t('placeholder'), initialContent, extraExtensions);
 
@@ -51,6 +54,20 @@ export function EditorContainer({
 
   // Auto-save hook
   useAutoSave(documentId || null, editor);
+
+  useEffect(() => {
+    hasSeededCollaborationRef.current = false;
+  }, [documentId]);
+
+  useEffect(() => {
+    if (!collabSynced || !editor || !initialContent || hasSeededCollaborationRef.current) return;
+
+    hasSeededCollaborationRef.current = true;
+
+    if (editor.isEmpty) {
+      editor.commands.setContent(initialContent, { emitUpdate: true });
+    }
+  }, [collabSynced, editor, initialContent]);
 
   // Sync code → editor when leaving code mode (best-effort)
   useEffect(() => {
@@ -68,7 +85,7 @@ export function EditorContainer({
   }, [viewMode, editor, typstSource]);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <Toolbar editor={editor} />
       {documentId && collabStatus && collabStatus !== 'disconnected' && (
         <CollaborationBar
@@ -79,10 +96,10 @@ export function EditorContainer({
         />
       )}
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Visual mode: editor only, full width */}
         {viewMode === 'visual' && (
-          <div className="flex-1 flex flex-col">
+          <div className="flex flex-1 flex-col">
             <EditorPane editor={editor} />
           </div>
         )}
@@ -90,10 +107,10 @@ export function EditorContainer({
         {/* Split mode: editor left + preview right */}
         {viewMode === 'split' && (
           <>
-            <div className="w-1/2 flex flex-col border-r border-gray-200">
+            <div className="flex w-1/2 flex-col border-r border-gray-200">
               <EditorPane editor={editor} />
             </div>
-            <div className="w-1/2 flex flex-col">
+            <div className="flex w-1/2 flex-col">
               <PreviewPane />
             </div>
           </>
@@ -101,11 +118,8 @@ export function EditorContainer({
 
         {/* Code mode: code editor only, full width */}
         {viewMode === 'code' && (
-          <div className="flex-1 flex flex-col">
-            <CodeEditor
-              value={typstSource}
-              onChange={(newCode) => setTypstSource(newCode)}
-            />
+          <div className="flex flex-1 flex-col">
+            <CodeEditor value={typstSource} onChange={(newCode) => setTypstSource(newCode)} />
           </div>
         )}
       </div>

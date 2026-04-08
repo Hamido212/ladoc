@@ -16,6 +16,12 @@ interface CompileRequest {
   source: string;
 }
 
+interface CompilePdfRequest {
+  type: 'compilePdf';
+  id: number;
+  source: string;
+}
+
 interface InitRequest {
   type: 'init';
 }
@@ -25,6 +31,12 @@ interface CompileResponse {
   id: number;
   svg: string;
   pages: number;
+}
+
+interface PdfCompileResponse {
+  type: 'pdfCompiled';
+  id: number;
+  pdf: ArrayBuffer;
 }
 
 interface ErrorResponse {
@@ -37,8 +49,8 @@ interface ReadyResponse {
   type: 'ready';
 }
 
-type WorkerRequest = CompileRequest | InitRequest;
-type WorkerResponse = CompileResponse | ErrorResponse | ReadyResponse;
+type WorkerRequest = CompileRequest | CompilePdfRequest | InitRequest;
+type WorkerResponse = CompileResponse | PdfCompileResponse | ErrorResponse | ReadyResponse;
 
 /**
  * Font URLs from fontsource CDN (jsdelivr).
@@ -75,9 +87,7 @@ async function initCompiler() {
     const origin = self.location.origin;
     $typst.setCompilerInitOptions({
       getModule: () => `${origin}/wasm/typst_ts_web_compiler_bg.wasm`,
-      beforeBuild: [
-        loadFonts(FONT_URLS),
-      ],
+      beforeBuild: [loadFonts(FONT_URLS)],
     });
     $typst.setRendererInitOptions({
       getModule: () => `${origin}/wasm/typst_ts_renderer_bg.wasm`,
@@ -136,6 +146,42 @@ async function compile(id: number, source: string) {
   }
 }
 
+async function compilePdf(id: number, source: string) {
+  if (!isInitialized || !typstCompiler) {
+    const response: ErrorResponse = {
+      type: 'error',
+      id,
+      error: 'Compiler not initialized',
+    };
+    self.postMessage(response);
+    return;
+  }
+
+  try {
+    const $typst = typstCompiler as {
+      pdf: (opts: { mainContent: string }) => Promise<Uint8Array>;
+    };
+
+    const pdf = await $typst.pdf({ mainContent: source });
+    const pdfBytes = new Uint8Array(pdf);
+    const pdfBuffer = pdfBytes.buffer;
+
+    const response: PdfCompileResponse = {
+      type: 'pdfCompiled',
+      id,
+      pdf: pdfBuffer,
+    };
+    self.postMessage(response, [pdfBuffer]);
+  } catch (err) {
+    const response: ErrorResponse = {
+      type: 'error',
+      id,
+      error: `PDF export error: ${err}`,
+    };
+    self.postMessage(response);
+  }
+}
+
 self.onmessage = (event: MessageEvent<WorkerRequest>) => {
   const { data } = event;
 
@@ -146,7 +192,19 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
     case 'compile':
       compile(data.id, data.source);
       break;
+    case 'compilePdf':
+      compilePdf(data.id, data.source);
+      break;
   }
 };
 
-export type { CompileRequest, CompileResponse, ErrorResponse, ReadyResponse, WorkerRequest, WorkerResponse };
+export type {
+  CompileRequest,
+  CompilePdfRequest,
+  CompileResponse,
+  PdfCompileResponse,
+  ErrorResponse,
+  ReadyResponse,
+  WorkerRequest,
+  WorkerResponse,
+};

@@ -25,15 +25,13 @@ export function EditorPane({ editor }: EditorPaneProps) {
 
   if (!editor) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-400">
-        Loading editor...
-      </div>
+      <div className="flex flex-1 items-center justify-center text-gray-400">{t('loading')}</div>
     );
   }
 
   return (
     <div
-      className={`flex-1 overflow-auto bg-white relative ${isDragOver ? 'ring-2 ring-inset ring-blue-400' : ''}`}
+      className={`relative flex-1 overflow-auto bg-white ${isDragOver ? 'ring-2 ring-blue-400 ring-inset' : ''}`}
       onDragOver={(e) => {
         e.preventDefault();
         if (e.dataTransfer.types.includes('Files')) setIsDragOver(true);
@@ -47,8 +45,8 @@ export function EditorPane({ editor }: EditorPaneProps) {
       }}
     >
       {isDragOver && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-50/80 pointer-events-none">
-          <p className="text-blue-600 font-medium text-sm">{t('dropImage')}</p>
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-blue-50/80">
+          <p className="text-sm font-medium text-blue-600">{t('dropImage')}</p>
         </div>
       )}
       <TableToolbar editor={editor} />

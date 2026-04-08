@@ -19,8 +19,14 @@ interface UseCollaborationOptions {
 // Generate a random color for cursor
 function randomColor() {
   const colors = [
-    '#958DF1', '#F98181', '#FBBC88', '#FAF594',
-    '#70CFF8', '#94FADB', '#B9F18D', '#E8A0BF',
+    '#958DF1',
+    '#F98181',
+    '#FBBC88',
+    '#FAF594',
+    '#70CFF8',
+    '#94FADB',
+    '#B9F18D',
+    '#E8A0BF',
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -34,23 +40,48 @@ export function useCollaboration({
   const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const [connectedUsers, setConnectedUsers] = useState<number>(0);
   const [awarenessUsers, setAwarenessUsers] = useState<AwarenessUser[]>([]);
+  const [hasSynced, setHasSynced] = useState(false);
+  const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
+  const [provider, setProvider] = useState<HocuspocusProvider | null>(null);
   const color = useMemo(() => userColor || randomColor(), [userColor]);
   const indexeddbProviderRef = useRef<unknown>(null);
 
-  const ydoc = useMemo(() => new Y.Doc(), []);
+  useEffect(() => {
+    if (!documentId) {
+      setYdoc(null);
+      return;
+    }
+
+    const nextYdoc = new Y.Doc();
+    setYdoc(nextYdoc);
+
+    return () => {
+      nextYdoc.destroy();
+    };
+  }, [documentId]);
+
+  useEffect(() => {
+    setHasSynced(false);
+    setConnectedUsers(0);
+    setAwarenessUsers([]);
+    setProvider(null);
+    setStatus(token && documentId ? 'connecting' : 'disconnected');
+  }, [documentId, token]);
 
   // Set up IndexedDB offline persistence
   useEffect(() => {
-    if (!documentId) return;
+    if (!documentId || !ydoc) return;
 
     let idbProvider: { destroy: () => void } | null = null;
 
-    import('y-indexeddb').then(({ IndexeddbPersistence }) => {
-      idbProvider = new IndexeddbPersistence(`ladoc-${documentId}`, ydoc);
-      indexeddbProviderRef.current = idbProvider;
-    }).catch(() => {
-      // y-indexeddb not available, skip offline persistence
-    });
+    import('y-indexeddb')
+      .then(({ IndexeddbPersistence }) => {
+        idbProvider = new IndexeddbPersistence(`ladoc-${documentId}`, ydoc);
+        indexeddbProviderRef.current = idbProvider;
+      })
+      .catch(() => {
+        // y-indexeddb not available, skip offline persistence
+      });
 
     return () => {
       idbProvider?.destroy();
@@ -58,12 +89,12 @@ export function useCollaboration({
     };
   }, [documentId, ydoc]);
 
-  const provider = useMemo(() => {
-    if (!documentId || !token) return null;
+  useEffect(() => {
+    if (!documentId || !token || !ydoc) return;
 
     const wsUrl = process.env.NEXT_PUBLIC_COLLAB_URL || 'ws://localhost:1234';
 
-    return new HocuspocusProvider({
+    const nextProvider = new HocuspocusProvider({
       url: wsUrl,
       name: documentId,
       document: ydoc,
@@ -72,7 +103,7 @@ export function useCollaboration({
         setStatus(s as 'connecting' | 'connected' | 'disconnected');
       },
       onAwarenessUpdate({ states }) {
-        setConnectedUsers(states.length);
+        setConnectedUsers((prev) => (prev === states.length ? prev : states.length));
         // Extract user info from awareness states
         const users: AwarenessUser[] = [];
         for (const state of states) {
@@ -81,9 +112,27 @@ export function useCollaboration({
             users.push({ name: user.name, color: user.color || '#888' });
           }
         }
-        setAwarenessUsers(users);
+        setAwarenessUsers((prev) => {
+          if (prev.length !== users.length) return users;
+          for (let i = 0; i < users.length; i++) {
+            if (prev[i].name !== users[i].name || prev[i].color !== users[i].color) {
+              return users;
+            }
+          }
+          return prev;
+        });
+      },
+      onSynced() {
+        setHasSynced(true);
       },
     });
+
+    setProvider(nextProvider);
+
+    return () => {
+      nextProvider.destroy();
+      setProvider((current) => (current === nextProvider ? null : current));
+    };
   }, [documentId, token, ydoc]);
 
   // Set awareness user info
@@ -95,17 +144,12 @@ export function useCollaboration({
     });
   }, [provider, userName, color]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      provider?.destroy();
-    };
-  }, [provider]);
-
   return {
     ydoc,
     provider,
     status,
+    hasSynced,
+    userColor: color,
     connectedUsers,
     awarenessUsers,
   };

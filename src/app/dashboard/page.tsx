@@ -10,10 +10,7 @@ export default async function DashboardPage() {
   const documents = await prisma.document.findMany({
     where: {
       deletedAt: null,
-      OR: [
-        { ownerId: session.user.id },
-        { collaborators: { some: { userId: session.user.id } } },
-      ],
+      OR: [{ ownerId: session.user.id }, { collaborators: { some: { userId: session.user.id } } }],
     },
     select: {
       id: true,
@@ -25,10 +22,25 @@ export default async function DashboardPage() {
     orderBy: { updatedAt: 'desc' },
   });
 
+  const deletedDocuments = await prisma.document.findMany({
+    where: {
+      ownerId: session.user.id,
+      deletedAt: { not: null },
+    },
+    select: {
+      id: true,
+      title: true,
+      updatedAt: true,
+      deletedAt: true,
+    },
+    orderBy: { deletedAt: 'desc' },
+  });
+
   return (
     <DashboardContent
       user={session.user}
       documents={documents}
+      deletedDocuments={deletedDocuments}
     />
   );
 }

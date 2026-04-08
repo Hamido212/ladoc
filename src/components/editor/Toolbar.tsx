@@ -27,7 +27,7 @@ import {
   Heading2,
   Heading3,
   Highlighter,
-  Image,
+  Image as ImageIcon,
   Table,
   Code2,
   Minus,
@@ -36,14 +36,12 @@ import {
   Eye,
   FileCode,
   Columns2,
-  Palette,
   Type,
   ListTodo,
   Quote,
   SeparatorHorizontal,
   Sigma,
   Footprints,
-  BookOpen,
   TableOfContents,
   ArrowLeft,
 } from 'lucide-react';
@@ -72,14 +70,11 @@ function ToolbarButton({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`
-        p-1.5 rounded-md transition-colors
-        ${isActive
+      className={`rounded-md p-1.5 transition-colors ${
+        isActive
           ? 'bg-blue-100 text-blue-700'
           : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-        }
-        ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
-      `}
+      } ${disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'} `}
     >
       {children}
     </button>
@@ -87,7 +82,7 @@ function ToolbarButton({
 }
 
 function ToolbarSeparator() {
-  return <div className="w-px h-6 bg-gray-200 mx-1" />;
+  return <div className="mx-1 h-6 w-px bg-gray-200" />;
 }
 
 function FontSizeSelect({ editor }: { editor: Editor }) {
@@ -108,7 +103,7 @@ function FontSizeSelect({ editor }: { editor: Editor }) {
           editor.chain().focus().setFontSize(size).run();
         }
       }}
-      className="h-8 px-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      className="h-8 rounded-md border border-gray-200 bg-white px-1.5 text-sm text-gray-700 focus:ring-1 focus:ring-blue-500 focus:outline-none"
     >
       {sizes.map((size) => (
         <option key={size} value={size}>
@@ -146,7 +141,7 @@ function FontFamilySelect({ editor }: { editor: Editor }) {
           editor.chain().focus().setFontFamily(font).run();
         }
       }}
-      className="h-8 px-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[140px]"
+      className="h-8 max-w-[140px] rounded-md border border-gray-200 bg-white px-1.5 text-sm text-gray-700 focus:ring-1 focus:ring-blue-500 focus:outline-none"
     >
       {fonts.map((font) => (
         <option key={font.value} value={font.value}>
@@ -174,10 +169,10 @@ function ColorPicker({
 
   return (
     <label title={title} className="relative cursor-pointer">
-      <div className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
-        <Icon className="w-4 h-4" />
+      <div className="rounded-md p-1.5 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900">
+        <Icon className="h-4 w-4" />
         <div
-          className="w-4 h-0.5 mx-auto -mt-0.5"
+          className="mx-auto -mt-0.5 h-0.5 w-4"
           style={{ backgroundColor: currentColor as string }}
         />
       </div>
@@ -185,7 +180,7 @@ function ColorPicker({
         type="color"
         value={currentColor as string}
         onChange={(e) => setter(e.target.value)}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       />
     </label>
   );
@@ -212,11 +207,11 @@ export function Toolbar({ editor }: ToolbarProps) {
   const iconSize = 'w-4 h-4';
 
   return (
-    <div className="flex items-center gap-0.5 px-3 py-1.5 border-b border-gray-200 bg-white flex-wrap">
+    <div className="flex flex-wrap items-center gap-0.5 border-b border-gray-200 bg-white px-3 py-1.5">
       {/* Back to Dashboard */}
       <Link
         href="/dashboard"
-        className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+        className="rounded-md p-1.5 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
         title={t('backToDashboard')}
       >
         <ArrowLeft className={iconSize} />
@@ -386,7 +381,7 @@ export function Toolbar({ editor }: ToolbarProps) {
         }}
       />
       <ToolbarButton onClick={() => imageInputRef.current?.click()} title={t('image')}>
-        <Image className={iconSize} />
+        <ImageIcon className={iconSize} />
       </ToolbarButton>
       <ToolbarButton
         onClick={() =>
@@ -424,7 +419,9 @@ export function Toolbar({ editor }: ToolbarProps) {
         <Quote className={iconSize} />
       </ToolbarButton>
       <ToolbarButton
-        onClick={() => (editor.chain().focus() as unknown as { setPageBreak: () => void }).setPageBreak()}
+        onClick={() =>
+          (editor.chain().focus() as unknown as { setPageBreak: () => void }).setPageBreak()
+        }
         title={t('pageBreak')}
       >
         <SeparatorHorizontal className={iconSize} />
@@ -441,9 +438,13 @@ export function Toolbar({ editor }: ToolbarProps) {
         onOpenChange={setMathOpen}
         onInsert={(formula, display) => {
           if (display) {
-            (editor.commands as unknown as { insertMathBlock: (f: string) => boolean }).insertMathBlock(formula);
+            (
+              editor.commands as unknown as { insertMathBlock: (f: string) => boolean }
+            ).insertMathBlock(formula);
           } else {
-            (editor.commands as unknown as { insertMath: (f: string, d: boolean) => boolean }).insertMath(formula, false);
+            (
+              editor.commands as unknown as { insertMath: (f: string, d: boolean) => boolean }
+            ).insertMath(formula, false);
           }
         }}
       />
@@ -478,7 +479,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       <PageSettingsDialog />
 
       {/* View Mode Toggle */}
-      <div className="flex items-center gap-0.5 border border-gray-200 rounded-lg p-0.5">
+      <div className="flex items-center gap-0.5 rounded-lg border border-gray-200 p-0.5">
         <ToolbarButton
           onClick={() => setViewMode('visual')}
           isActive={viewMode === 'visual'}

@@ -24,17 +24,6 @@ function generateCiteKey(result: SearchResult): string {
   return `${firstAuthor}${result.year}`;
 }
 
-function generateBibtex(result: SearchResult): string {
-  const authors = result.authors.join(' and ');
-  return `@article{${result.citeKey},
-  title = {${result.title}},
-  author = {${authors}},
-  year = {${result.year}},
-  ${result.journal ? `journal = {${result.journal}},` : ''}
-  ${result.doi ? `doi = {${result.doi}},` : ''}
-}`;
-}
-
 export function CitationSearch({ editor }: CitationSearchProps) {
   const t = useTranslations('citations');
   const [open, setOpen] = useState(false);
@@ -66,7 +55,8 @@ export function CitationSearch({ editor }: CitationSearchProps) {
         const authors = ((item.author as Array<{ given?: string; family?: string }>) || []).map(
           (a) => `${a.given || ''} ${a.family || ''}`.trim()
         );
-        const year = ((item['published-print'] as { 'date-parts'?: number[][] })?.['date-parts']?.[0]?.[0]) || 0;
+        const year =
+          (item['published-print'] as { 'date-parts'?: number[][] })?.['date-parts']?.[0]?.[0] || 0;
         const title = ((item.title as string[]) || ['Untitled'])[0];
         const journal = ((item['container-title'] as string[]) || [])[0] || '';
         const doi = (item.DOI as string) || '';
@@ -84,96 +74,99 @@ export function CitationSearch({ editor }: CitationSearchProps) {
     }
   }, [query, t]);
 
-  const insertCitation = useCallback((result: SearchResult) => {
-    if (!editor) return;
-    const label = `${result.authors[0]?.split(' ').pop() || 'Unknown'} ${result.year}`;
-    editor.chain().focus().insertCitation(result.citeKey, label).run();
-    setOpen(false);
-  }, [editor]);
+  const insertCitation = useCallback(
+    (result: SearchResult) => {
+      if (!editor) return;
+      const label = `${result.authors[0]?.split(' ').pop() || 'Unknown'} ${result.year}`;
+      editor.chain().focus().insertCitation(result.citeKey, label).run();
+      setOpen(false);
+    },
+    [editor]
+  );
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <button
-          className="p-1.5 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
+          className="cursor-pointer rounded-md p-1.5 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
           title={t('title')}
         >
-          <BookOpen className="w-4 h-4" />
+          <BookOpen className="h-4 w-4" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/40 z-50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-xl shadow-xl p-6 w-[550px] max-w-[95vw] max-h-[80vh] flex flex-col">
-          <div className="flex items-center justify-between mb-4">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 flex max-h-[80vh] w-[550px] max-w-[95vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white p-6 shadow-xl">
+          <div className="mb-4 flex items-center justify-between">
             <Dialog.Title className="text-base font-semibold text-gray-900">
               {t('title')}
             </Dialog.Title>
             <Dialog.Close asChild>
-              <button className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100">
-                <X className="w-4 h-4" />
+              <button className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                <X className="h-4 w-4" />
               </button>
             </Dialog.Close>
           </div>
 
           {/* Search bar */}
-          <div className="flex gap-2 mb-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <div className="mb-4 flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && search()}
                 placeholder={t('searchPlaceholder')}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 py-2 pr-3 pl-10 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
             <button
               onClick={search}
               disabled={loading || !query.trim()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1.5"
+              className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="h-4 w-4" />
+              )}
               {t('search')}
             </button>
           </div>
 
           {/* Results */}
           <div className="flex-1 overflow-y-auto">
-            {error && (
-              <div className="text-sm text-red-500 text-center py-4">{error}</div>
-            )}
+            {error && <div className="py-4 text-center text-sm text-red-500">{error}</div>}
             {!loading && results.length === 0 && !error && (
-              <div className="text-sm text-gray-400 text-center py-8">
-                {t('searchHint')}
-              </div>
+              <div className="py-8 text-center text-sm text-gray-400">{t('searchHint')}</div>
             )}
             <div className="space-y-2">
               {results.map((result, i) => (
                 <div
                   key={i}
-                  className="p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-colors group"
+                  className="group rounded-lg border border-gray-200 p-3 transition-colors hover:border-blue-300 hover:bg-blue-50/30"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 leading-snug">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm leading-snug font-medium text-gray-900">
                         {result.title}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="mt-1 text-xs text-gray-500">
                         {result.authors.slice(0, 3).join(', ')}
                         {result.authors.length > 3 && ' et al.'}
                         {result.year ? ` (${result.year})` : ''}
                       </p>
                       {result.journal && (
-                        <p className="text-xs text-gray-400 italic mt-0.5">{result.journal}</p>
+                        <p className="mt-0.5 text-xs text-gray-400 italic">{result.journal}</p>
                       )}
                     </div>
                     <button
                       onClick={() => insertCitation(result)}
-                      className="p-1.5 rounded-md text-blue-600 hover:bg-blue-100 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                      className="flex-shrink-0 rounded-md p-1.5 text-blue-600 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-blue-100"
                       title={t('insertCitation')}
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="h-4 w-4" />
                     </button>
                   </div>
                 </div>

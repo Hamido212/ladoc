@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/stores/editor-store';
 
 export function useTypstCompiler() {
@@ -8,20 +8,15 @@ export function useTypstCompiler() {
   const compileIdRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isReadyRef = useRef(false);
+  const [isReady, setIsReady] = useState(false);
 
-  const {
-    setSvgContent,
-    setIsCompiling,
-    setCompilationError,
-    setStats,
-  } = useEditorStore();
+  const { setSvgContent, setIsCompiling, setCompilationError, setStats } = useEditorStore();
 
   // Initialize the web worker
   useEffect(() => {
-    const worker = new Worker(
-      new URL('@/lib/typst/compiler.worker.ts', import.meta.url),
-      { type: 'module' }
-    );
+    const worker = new Worker(new URL('@/lib/typst/compiler.worker.ts', import.meta.url), {
+      type: 'module',
+    });
 
     worker.onmessage = (event) => {
       const data = event.data;
@@ -29,6 +24,7 @@ export function useTypstCompiler() {
       switch (data.type) {
         case 'ready':
           isReadyRef.current = true;
+          setIsReady(true);
           break;
 
         case 'compiled':
@@ -54,6 +50,7 @@ export function useTypstCompiler() {
       worker.terminate();
       workerRef.current = null;
       isReadyRef.current = false;
+      setIsReady(false);
     };
   }, [setSvgContent, setIsCompiling, setCompilationError, setStats]);
 
@@ -100,6 +97,6 @@ export function useTypstCompiler() {
   return {
     compile,
     compileNow,
-    isReady: isReadyRef.current,
+    isReady,
   };
 }

@@ -31,15 +31,15 @@ interface SerializerOptions {
  * Generic families (serif/sans-serif/monospace) are handled natively by Typst.
  */
 const FONT_MAP: Record<string, string> = {
-  // Generic families
-  'serif': 'Linux Libertine',        // Built-in to Typst WASM
+  // Generic families — only fonts actually loaded by the worker are used
+  'serif': 'Noto Serif',             // Loaded from CDN in worker
   'sans-serif': 'Noto Sans',         // Loaded from CDN in worker
   'monospace': 'DejaVu Sans Mono',   // Built-in to Typst WASM
   // Specific fonts — mapped to available alternatives
-  'Georgia': 'Noto Serif',           // Loaded from CDN (similar serif)
-  'Times New Roman': 'Linux Libertine', // Built-in (similar serif)
-  'Arial': 'Noto Sans',              // Loaded from CDN (similar sans)
-  'Verdana': 'Noto Sans',            // Loaded from CDN (similar sans)
+  'Georgia': 'Noto Serif',
+  'Times New Roman': 'Noto Serif',
+  'Arial': 'Noto Sans',
+  'Verdana': 'Noto Sans',
 };
 
 export function mapFontToTypst(cssFont: string): string {
@@ -155,7 +155,10 @@ function serializeInlineContent(node: JSONContent): string {
       }
       if (child.type === 'citation') {
         const citeKey = (child.attrs?.citeKey as string) || '';
-        return `@${citeKey}`;
+        const label = (child.attrs?.label as string) || citeKey;
+        // Render as plain bracketed label — no bibliography file is loaded,
+        // so Typst's @key syntax would error with "label does not exist".
+        return `\\[${escapeTypst(label)}\\]`;
       }
       return '';
     })
@@ -186,6 +189,9 @@ function serializeParagraph(node: JSONContent): string {
   if (!content) return '\n';
 
   const textAlign = node.attrs?.textAlign as string | undefined;
+  if (textAlign === 'justify') {
+    return `#par(justify: true)[${content}]\n\n`;
+  }
   if (textAlign && textAlign !== 'left') {
     return `#align(${textAlign})[${content}]\n\n`;
   }
@@ -851,12 +857,24 @@ export function parseTypst(source: string): JSONContent {
     }
 
     // Aligned paragraph: #align(center)[...]
-    const alignMatch = line.match(/^#align\((left|center|right|justify)\)\[(.+)\]$/);
+    const alignMatch = line.match(/^#align\((left|center|right)\)\[(.+)\]$/);
     if (alignMatch) {
       nodes.push({
         type: 'paragraph',
         attrs: { textAlign: alignMatch[1] },
         content: parseInlineTypst(alignMatch[2]),
+      });
+      i++;
+      continue;
+    }
+
+    // Justified paragraph: #par(justify: true)[...]
+    const justifyMatch = line.match(/^#par\(justify:\s*true\)\[(.+)\]$/);
+    if (justifyMatch) {
+      nodes.push({
+        type: 'paragraph',
+        attrs: { textAlign: 'justify' },
+        content: parseInlineTypst(justifyMatch[1]),
       });
       i++;
       continue;
@@ -1007,6 +1025,7 @@ export function parseTypst(source: string): JSONContent {
         l.startsWith('#show ') ||
         l.startsWith('#import ') ||
         l.startsWith('#align(') ||
+        l.startsWith('#par(') ||
         l.startsWith('#line(length:') ||
         l.startsWith('#pagebreak()') ||
         l.startsWith('#outline()') ||

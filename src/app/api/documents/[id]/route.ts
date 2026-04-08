@@ -1,26 +1,19 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
-import { deleteFile } from '@/lib/s3';
 
 async function hasAccess(documentId: string, userId: string) {
   const doc = await prisma.document.findFirst({
     where: {
       id: documentId,
       deletedAt: null,
-      OR: [
-        { ownerId: userId },
-        { collaborators: { some: { userId } } },
-      ],
+      OR: [{ ownerId: userId }, { collaborators: { some: { userId } } }],
     },
   });
   return doc;
 }
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -36,22 +29,40 @@ export async function GET(
   return NextResponse.json(document);
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { id } = await params;
+  const body = await request.json().catch(() => ({}));
+
+  if (body.restore === true) {
+    const deletedDocument = await prisma.document.findFirst({
+      where: {
+        id,
+        ownerId: session.user.id,
+        deletedAt: { not: null },
+      },
+    });
+
+    if (!deletedDocument) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    const restoredDocument = await prisma.document.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+
+    return NextResponse.json(restoredDocument);
+  }
+
   const existing = await hasAccess(id, session.user.id);
   if (!existing) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
-
-  const body = await request.json();
 
   const document = await prisma.document.update({
     where: { id },
@@ -67,10 +78,7 @@ export async function PUT(
   return NextResponse.json(document);
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -85,20 +93,6 @@ export async function DELETE(
 
   if (!document) {
     return NextResponse.json({ error: 'Not found or not owner' }, { status: 404 });
-  }
-
-  // Clean up S3 assets
-  const assets = await prisma.documentAsset.findMany({
-    where: { documentId: id },
-    select: { s3Key: true },
-  });
-
-  for (const asset of assets) {
-    try {
-      await deleteFile(asset.s3Key);
-    } catch {
-      // Continue even if individual S3 delete fails
-    }
   }
 
   // Soft delete the document

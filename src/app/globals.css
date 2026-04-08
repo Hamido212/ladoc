@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -148,7 +148,7 @@ body {
 }
 
 .ProseMirror .selectedCell::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: rgba(59, 130, 246, 0.1);
@@ -172,4 +172,27 @@ body {
 /* SVG Preview styles */
 .typst-page {
   margin: 0 auto;
+}
+
+/* Collaboration cursors */
+.collaboration-cursor__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 2px solid #2563eb;
+  border-right: 2px solid transparent;
+  pointer-events: none;
+}
+
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
 }

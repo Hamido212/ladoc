@@ -51,9 +51,7 @@ export function NewDocumentDialog() {
     setCreating(true);
 
     try {
-      const template = templateId
-        ? templates.find((t) => t.id === templateId)
-        : undefined;
+      const template = templateId ? templates.find((t) => t.id === templateId) : undefined;
 
       const res = await fetch('/api/documents', {
         method: 'POST',
@@ -76,24 +74,22 @@ export function NewDocumentDialog() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button
-          className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-medium rounded-full hover:shadow-lg hover:shadow-blue-500/25 transition-all"
-        >
-          <Plus className="w-4 h-4" />
+        <button className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 px-4 py-2 text-sm font-medium text-white transition-all hover:shadow-lg hover:shadow-blue-500/25">
+          <Plus className="h-4 w-4" />
           {t('dashboard.newDocument')}
         </button>
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl p-6 w-[620px] max-w-[95vw] max-h-[85vh] overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[85vh] w-[620px] max-w-[95vw] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+          <div className="mb-6 flex items-center justify-between">
             <Dialog.Title className="text-lg font-bold text-gray-900">
               {t('dashboard.createFrom')}
             </Dialog.Title>
             <Dialog.Close asChild>
-              <button className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-                <X className="w-4 h-4" />
+              <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+                <X className="h-4 w-4" />
               </button>
             </Dialog.Close>
           </div>
@@ -104,16 +100,18 @@ export function NewDocumentDialog() {
               <button
                 onClick={() => createDocument()}
                 disabled={creating}
-                className="flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all text-left disabled:opacity-50"
+                className="flex items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 p-4 text-left transition-all hover:border-blue-300 hover:bg-blue-50/30 disabled:opacity-50"
               >
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                  <File className="w-5 h-5 text-gray-400" />
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100">
+                  <File className="h-5 w-5 text-gray-400" />
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-gray-900">
                     {t('templates.emptyDocument')}
                   </div>
-                  <div className="text-xs text-gray-400 mt-0.5">Leeres Dokument</div>
+                  <div className="mt-0.5 text-xs text-gray-400">
+                    {t('templates.emptyDocumentDesc')}
+                  </div>
                 </div>
               </button>
             </Dialog.Close>
@@ -127,16 +125,18 @@ export function NewDocumentDialog() {
                   <button
                     onClick={() => createDocument(template.id)}
                     disabled={creating}
-                    className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 hover:border-transparent hover:shadow-md hover:bg-gradient-to-br hover:from-gray-50 hover:to-white transition-all text-left disabled:opacity-50"
+                    className="flex items-center gap-3 rounded-xl border border-gray-100 p-4 text-left transition-all hover:border-transparent hover:bg-gradient-to-br hover:from-gray-50 hover:to-white hover:shadow-md disabled:opacity-50"
                   >
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0`}>
-                      <Icon className="w-5 h-5 text-white" />
+                    <div
+                      className={`h-10 w-10 rounded-lg bg-gradient-to-br ${color} flex flex-shrink-0 items-center justify-center`}
+                    >
+                      <Icon className="h-5 w-5 text-white" />
                     </div>
                     <div className="min-w-0">
                       <div className="text-sm font-semibold text-gray-900">
                         {t(`templates.${template.nameKey}`)}
                       </div>
-                      <div className="text-xs text-gray-400 mt-0.5 truncate">
+                      <div className="mt-0.5 truncate text-xs text-gray-400">
                         {t(`templates.${template.descriptionKey}`)}
                       </div>
                     </div>

@@ -16,7 +16,6 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
-import { useCallback, useEffect } from 'react';
 import { useEditorStore } from '@/stores/editor-store';
 import { serialize, countWords, countCharacters } from '@/lib/typst/serializer';
 import { useTypstCompiler } from './useTypstCompiler';
@@ -126,7 +125,11 @@ const PageBreak = Node.create({
     return {
       setPageBreak:
         () =>
-        ({ chain }: { chain: () => { insertContent: (content: { type: string }) => { run: () => boolean } } }) => {
+        ({
+          chain,
+        }: {
+          chain: () => { insertContent: (content: { type: string }) => { run: () => boolean } };
+        }) => {
           return chain().insertContent({ type: this.name }).run();
         },
     } as Record<string, () => (...args: unknown[]) => boolean>;
@@ -134,19 +137,28 @@ const PageBreak = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      'Mod-Enter': () => (this.editor.commands as unknown as { setPageBreak: () => boolean }).setPageBreak(),
+      'Mod-Enter': () =>
+        (this.editor.commands as unknown as { setPageBreak: () => boolean }).setPageBreak(),
     };
   },
 });
 
-export function useLadocEditor(placeholder: string, initialContent?: object, extraExtensions?: Parameters<typeof useTipTapEditor>[0]['extensions']) {
+export function useLadocEditor(
+  placeholder: string,
+  initialContent?: object,
+  extraExtensions?: Parameters<typeof useTipTapEditor>[0]['extensions']
+) {
   const { setTypstSource, setStats, pageSettings, documentMeta } = useEditorStore();
   const { compile } = useTypstCompiler();
+  const hasCollaboration = extraExtensions?.some(
+    (extension) => extension?.name === 'collaboration'
+  );
 
   const editor = useTipTapEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4, 5, 6] },
+        undoRedo: hasCollaboration ? false : undefined,
       }),
       Underline,
       TextAlign.configure({

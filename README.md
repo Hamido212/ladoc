@@ -2,9 +2,9 @@
 
 # ladoc
 
-**Der kollaborative Dokumenten-Editor für den Browser.**
+**The collaborative document editor for the browser.**
 
-Schreibe professionelle Dokumente mit einer Word-ähnlichen Oberfläche — und erhalte dank [Typst](https://typst.app) druckreife PDFs in Echtzeit.
+Write professional documents with a Word-like interface and get print-ready output powered by [Typst](https://typst.app).
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)](https://react.dev)
@@ -12,112 +12,117 @@ Schreibe professionelle Dokumente mit einer Word-ähnlichen Oberfläche — und 
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Prisma](https://img.shields.io/badge/Prisma-7-2d3748?logo=prisma&logoColor=white)](https://www.prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169e1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#lizenz)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 
-[Features](#-features) · [Demo](#-demo) · [Quick Start](#-quick-start) · [Architektur](#-architektur) · [Mitwirken](#-mitwirken)
+[Features](#-features) · [Demo](#-demo) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Contributing](#-contributing)
 
 </div>
 
 ---
 
-## 📖 Inhaltsverzeichnis
+## 📖 Table Of Contents
 
-- [Über das Projekt](#-über-das-projekt)
+- [About](#-about)
 - [Features](#-features)
-- [Tech-Stack](#-tech-stack)
+- [Tech Stack](#-tech-stack)
 - [Demo](#-demo)
 - [Quick Start](#-quick-start)
-- [Konfiguration](#-konfiguration)
-- [Skripte](#-skripte)
-- [Architektur](#-architektur)
-- [Vorlagen](#-vorlagen)
+- [Configuration](#-configuration)
+- [Scripts](#-scripts)
+- [Architecture](#-architecture)
+- [Templates](#-templates)
 - [Roadmap](#-roadmap)
-- [Mitwirken](#-mitwirken)
-- [Lizenz](#-lizenz)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## ✨ Über das Projekt
+## ✨ About
 
-**ladoc** verbindet die Einfachheit eines WYSIWYG-Editors mit der typografischen Qualität eines professionellen Satzsystems. Statt dich mit LaTeX-Syntax oder instabilen Word-Layouts herumzuschlagen, schreibst du in einer vertrauten visuellen Oberfläche — und ladoc übersetzt deine Inhalte im Hintergrund nach [Typst](https://typst.app), das wiederum makelloses PDF rendert.
+**ladoc** combines the simplicity of a WYSIWYG editor with the typographic quality of a professional typesetting system. Instead of dealing with LaTeX syntax or fragile Word layouts, you write in a familiar visual interface while ladoc translates your content into [Typst](https://typst.app) in the background.
 
-Das Ziel: **Professionelle Dokumente, ohne Hürden.** Egal ob Abschlussarbeit, Geschäftsbrief nach DIN 5008, Lebenslauf oder Rechnung — ladoc liefert fertige Vorlagen, Live-Vorschau, Versionierung und optionale Echtzeit-Zusammenarbeit.
+The goal is simple: **professional documents without friction.** Whether you are writing a thesis, a DIN 5008 business letter, a resume, or an invoice, ladoc provides ready-to-use templates, live preview, version history, and optional real-time collaboration.
 
-> **Warum nicht einfach Typst nutzen?**
-> Typst ist mächtig, verlangt aber Code-Kenntnisse. ladoc ist die visuelle Schicht darüber — für alle, die ein Word-ähnliches Gefühl wollen, ohne auf typografische Qualität zu verzichten.
+> **Why not just use Typst directly?**
+> Typst is powerful, but it still expects users to write code. ladoc is the visual layer on top for people who want a Word-like workflow without giving up typographic quality.
 
 ---
 
 ## 🚀 Features
 
 ### Editor
-- 📝 **Visueller WYSIWYG-Editor** auf Basis von [TipTap v3](https://tiptap.dev)
-- 👀 **Live-PDF-Vorschau** — kompiliert clientseitig via Typst WASM
-- 🔀 **Drei Ansichtsmodi** — Visuell, Split, Typst-Code
-- 📐 **Mathematische Formeln** (LaTeX-Syntax, inline & block)
-- 📚 **Fußnoten, Zitate & Literaturverzeichnis**
-- 📑 **Automatisches Inhaltsverzeichnis**
-- 🖼️ **Bilder, Tabellen, Listen, Code-Blöcke**
-- 🎨 **Schriftarten, Schriftgrößen, Farben, Highlighting**
 
-### Dokumenten-Management
-- 🗂️ **Dashboard** mit Suche und Dokumentenübersicht
-- 💾 **Auto-Save** — kein manuelles Speichern nötig
-- 🕑 **Versionshistorie** — zu jedem früheren Stand zurückkehren
-- 📤 **Export** als PDF oder Typst-Quellcode
-- 🗑️ **Soft-Delete** mit Wiederherstellung
+- 📝 **Visual WYSIWYG editor** built with [TipTap v3](https://tiptap.dev)
+- 👀 **Live Typst preview** compiled client-side via Typst WASM
+- 🔀 **Three view modes**: visual, split, and Typst code
+- 📐 **Mathematical formulas** with inline and block support
+- 📚 **Footnotes, citations, and reference-friendly document flow**
+- 📑 **Automatic table of contents**
+- 🖼️ **Images, tables, lists, and code blocks**
+- 🎨 **Fonts, font sizes, colors, and highlighting**
 
-### Zusammenarbeit
-- 👥 **Echtzeit-Kollaboration** via Yjs + Hocuspocus (optional)
-- 🎯 **Live-Cursor** anderer Teilnehmer
-- 🌐 **Offline-Persistenz** via IndexedDB
+### Document Management
 
-### Authentifizierung & Sicherheit
-- 🔐 **NextAuth v5** mit E-Mail/Passwort-, GitHub- und Google-Login
-- 🔑 **bcrypt** für Passwort-Hashing
-- 🛡️ **Rollenbasierte Freigaben** pro Dokument
+- 🗂️ **Dashboard** with search and document overview
+- 💾 **Autosave** with no manual save required
+- 🕑 **Version history** with restore support
+- 📤 **Export** as PDF, SVG, Typst source, plain text, or LaTeX
+- 🗑️ **Soft delete** with trash restore
 
-### Internationalisierung
-- 🇩🇪 Deutsch
-- 🇬🇧 Englisch
-- Mehr Sprachen einfach ergänzbar über `messages/*.json`
+### Collaboration
+
+- 👥 **Real-time collaboration** via Yjs and Hocuspocus
+- 🎯 **Live cursors** for active collaborators
+- 🌐 **Offline persistence** via IndexedDB
+
+### Authentication And Security
+
+- 🔐 **NextAuth v5** with email/password, GitHub, and Google login
+- 🔑 **bcrypt** for password hashing
+- 🛡️ **Role-based sharing** per document
+
+### Internationalization
+
+- 🇩🇪 German
+- 🇬🇧 English
+- Additional languages can be added through `messages/*.json`
 
 ---
 
-## 🛠️ Tech-Stack
+## 🛠️ Tech Stack
 
-| Bereich | Technologie |
-|---|---|
-| **Frontend-Framework** | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
-| **UI-Bibliothek** | [React 19](https://react.dev) |
-| **Sprache** | [TypeScript 5](https://www.typescriptlang.org) |
-| **Styling** | [Tailwind CSS 4](https://tailwindcss.com) |
-| **UI-Primitives** | [Radix UI](https://www.radix-ui.com) |
-| **Icons** | [Lucide](https://lucide.dev) |
-| **Editor** | [TipTap v3](https://tiptap.dev) (ProseMirror) |
-| **Satzsystem** | [Typst](https://typst.app) via [`@myriaddreamin/typst.ts`](https://github.com/Myriad-Dreamin/typst.ts) |
-| **Datenbank** | [PostgreSQL](https://www.postgresql.org) |
-| **ORM** | [Prisma 7](https://www.prisma.io) mit `@prisma/adapter-pg` |
-| **Authentifizierung** | [NextAuth v5](https://authjs.dev) |
-| **Kollaboration** | [Yjs](https://yjs.dev) + [Hocuspocus](https://tiptap.dev/hocuspocus) |
-| **State-Management** | [Zustand](https://zustand.docs.pmnd.rs) |
-| **i18n** | [next-intl](https://next-intl.dev) |
-| **Objektspeicher** | S3-kompatibel (z. B. MinIO) für Bilder |
-| **Testing** | [Vitest](https://vitest.dev) + Testing Library |
+| Area                   | Technology                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Frontend framework** | [Next.js 16](https://nextjs.org) (App Router, Turbopack)                                               |
+| **UI library**         | [React 19](https://react.dev)                                                                          |
+| **Language**           | [TypeScript 5](https://www.typescriptlang.org)                                                         |
+| **Styling**            | [Tailwind CSS 4](https://tailwindcss.com)                                                              |
+| **UI primitives**      | [Radix UI](https://www.radix-ui.com)                                                                   |
+| **Icons**              | [Lucide](https://lucide.dev)                                                                           |
+| **Editor**             | [TipTap v3](https://tiptap.dev) (ProseMirror)                                                          |
+| **Typesetting**        | [Typst](https://typst.app) via [`@myriaddreamin/typst.ts`](https://github.com/Myriad-Dreamin/typst.ts) |
+| **Database**           | [PostgreSQL](https://www.postgresql.org)                                                               |
+| **ORM**                | [Prisma 7](https://www.prisma.io) with `@prisma/adapter-pg`                                            |
+| **Authentication**     | [NextAuth v5](https://authjs.dev)                                                                      |
+| **Collaboration**      | [Yjs](https://yjs.dev) + [Hocuspocus](https://tiptap.dev/hocuspocus)                                   |
+| **State management**   | [Zustand](https://zustand.docs.pmnd.rs)                                                                |
+| **i18n**               | [next-intl](https://next-intl.dev)                                                                     |
+| **Object storage**     | S3-compatible storage (for example MinIO) for images                                                   |
+| **Testing**            | [Vitest](https://vitest.dev) + Testing Library                                                         |
 
 ---
 
 ## 🎬 Demo
 
-> _Screenshots und eine Live-Demo folgen._
+> _Screenshots and a live demo are coming soon._
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│  ladoc  │  Meine Dokumente   🔍 Suche   + Neues Dokument  │
+│  ladoc  │  My Documents   🔍 Search   + New Document      │
 ├────────────────────────────────────────────────────────────┤
 │                                                            │
-│   📄 Abschlussarbeit     📄 Lebenslauf     📄 Rechnung    │
-│   Zuletzt: heute         Zuletzt: gestern  Zuletzt: 2d    │
+│   📄 Thesis             📄 Resume          📄 Invoice      │
+│   Last: today           Last: yesterday    Last: 2d ago    │
 │                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
@@ -126,150 +131,150 @@ Das Ziel: **Professionelle Dokumente, ohne Hürden.** Egal ob Abschlussarbeit, G
 
 ## ⚡ Quick Start
 
-### Voraussetzungen
+### Requirements
 
-- **Node.js** ≥ 20
-- **PostgreSQL** ≥ 14
-- **npm**, **pnpm** oder **yarn**
+- **Node.js** >= 20
+- **PostgreSQL** >= 14
+- **npm**, **pnpm**, or **yarn**
 
-### 1. Repository klonen
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<dein-user>/ladoc.git
+git clone https://github.com/<your-user>/ladoc.git
 cd ladoc
 ```
 
-### 2. Abhängigkeiten installieren
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Umgebungsvariablen einrichten
+### 3. Set up environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-Öffne `.env` und trage mindestens Folgendes ein:
+Open `.env` and provide at least the following values:
 
 ```env
 DATABASE_URL="postgresql://ladoc:ladoc_dev@localhost:5432/ladoc"
-AUTH_SECRET="<generiere-mit-openssl-rand-hex-32>"
+AUTH_SECRET="<generate-with-openssl-rand-hex-32>"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-Einen sicheren `AUTH_SECRET` erzeugst du mit:
+Generate a secure `AUTH_SECRET` with:
 
 ```bash
 openssl rand -hex 32
 ```
 
-### 4. Datenbank initialisieren
+### 4. Initialize the database
 
 ```bash
 npx prisma migrate dev
 npx prisma generate
 ```
 
-### 5. Dev-Server starten
+### 5. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000) — fertig! 🎉
+Open [http://localhost:3000](http://localhost:3000) and start writing.
 
-### 6. (Optional) Kollaborations-Server starten
+### 6. (Optional) Start the collaboration server
 
-Für Echtzeit-Zusammenarbeit in einem zweiten Terminal:
+For real-time collaboration, run this in a second terminal:
 
 ```bash
 npm run collab
 ```
 
-Der Hocuspocus-Server lauscht standardmäßig auf `ws://localhost:1234`.
+The Hocuspocus server listens on `ws://localhost:1234` by default.
 
 ---
 
-## 🔧 Konfiguration
+## 🔧 Configuration
 
-Alle Umgebungsvariablen werden in `.env` gesetzt. Eine vollständige Vorlage findest du in [`.env.example`](./.env.example).
+All environment variables are defined in `.env`. A complete template is available in [`.env.example`](./.env.example).
 
-| Variable | Beschreibung | Beispiel |
-|---|---|---|
-| `DATABASE_URL` | PostgreSQL-Verbindungsstring | `postgresql://user:pass@localhost:5432/ladoc` |
-| `AUTH_SECRET` | Geheimnis für NextAuth-JWT-Signatur | `openssl rand -hex 32` |
-| `NEXTAUTH_URL` | Basis-URL der Anwendung | `http://localhost:3000` |
-| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | GitHub-OAuth-Credentials (optional) | — |
-| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google-OAuth-Credentials (optional) | — |
-| `NEXT_PUBLIC_COLLAB_URL` | WebSocket-URL des Hocuspocus-Servers | `ws://localhost:1234` |
-| `S3_ENDPOINT` | Endpoint des S3-kompatiblen Speichers | `http://localhost:9000` |
-| `S3_ACCESS_KEY` | S3-Zugriffsschlüssel | — |
-| `S3_SECRET_KEY` | S3-Secret | — |
-| `S3_BUCKET` | S3-Bucket-Name | `ladoc-assets` |
-| `S3_PUBLIC_URL` | Öffentliche URL für Bild-Assets | `http://localhost:9000/ladoc-assets` |
+| Variable                                | Description                               | Example                                       |
+| --------------------------------------- | ----------------------------------------- | --------------------------------------------- |
+| `DATABASE_URL`                          | PostgreSQL connection string              | `postgresql://user:pass@localhost:5432/ladoc` |
+| `AUTH_SECRET`                           | Secret used to sign NextAuth JWTs         | `openssl rand -hex 32`                        |
+| `NEXTAUTH_URL`                          | Base URL of the application               | `http://localhost:3000`                       |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | GitHub OAuth credentials (optional)       | —                                             |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth credentials (optional)       | —                                             |
+| `NEXT_PUBLIC_COLLAB_URL`                | WebSocket URL for the Hocuspocus server   | `ws://localhost:1234`                         |
+| `S3_ENDPOINT`                           | Endpoint for S3-compatible object storage | `http://localhost:9000`                       |
+| `S3_ACCESS_KEY`                         | S3 access key                             | —                                             |
+| `S3_SECRET_KEY`                         | S3 secret key                             | —                                             |
+| `S3_BUCKET`                             | S3 bucket name                            | `ladoc-assets`                                |
+| `S3_PUBLIC_URL`                         | Public base URL for uploaded assets       | `http://localhost:9000/ladoc-assets`          |
 
-> ⚠️ **`.env` niemals committen!** Die Datei steht bereits in `.gitignore`.
-
----
-
-## 📜 Skripte
-
-| Kommando | Beschreibung |
-|---|---|
-| `npm run dev` | Startet den Next.js-Dev-Server (Turbopack) |
-| `npm run build` | Produktions-Build |
-| `npm run start` | Startet die gebaute App |
-| `npm run lint` | ESLint über das Projekt laufen lassen |
-| `npm run format` | Formatierung via Prettier |
-| `npm run format:check` | Formatierung prüfen ohne Änderungen |
-| `npm run test` | Unit-Tests mit Vitest |
-| `npm run test:coverage` | Tests mit Coverage-Report |
-| `npm run collab` | Hocuspocus-Kollaborations-Server starten |
+> ⚠️ **Never commit `.env`.** The file is already listed in `.gitignore`.
 
 ---
 
-## 🏗️ Architektur
+## 📜 Scripts
+
+| Command                 | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| `npm run dev`           | Start the Next.js development server with Turbopack |
+| `npm run build`         | Create a production build                           |
+| `npm run start`         | Start the built application                         |
+| `npm run lint`          | Run ESLint across the project                       |
+| `npm run format`        | Format the codebase with Prettier                   |
+| `npm run format:check`  | Check formatting without changing files             |
+| `npm run test`          | Run unit tests with Vitest                          |
+| `npm run test:coverage` | Run tests with coverage reporting                   |
+| `npm run collab`        | Start the Hocuspocus collaboration server           |
+
+---
+
+## 🏗️ Architecture
 
 ```
 ladoc/
 ├── src/
 │   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/             # Login & Register
-│   │   ├── api/                # API-Routen (Dokumente, Auth, Upload)
-│   │   ├── dashboard/          # Dokumentenübersicht
-│   │   ├── editor/[id]/        # Editor-Seite
-│   │   └── page.tsx            # Landing Page
+│   │   ├── (auth)/             # Login and register
+│   │   ├── api/                # API routes (documents, auth, uploads)
+│   │   ├── dashboard/          # Document overview
+│   │   ├── editor/[id]/        # Editor page
+│   │   └── page.tsx            # Landing page
 │   │
 │   ├── components/
-│   │   ├── editor/             # Editor-Container, Toolbar, Dialoge
-│   │   ├── dashboard/          # Dashboard-UI
-│   │   ├── templates/          # Vorlagen-Galerie
-│   │   ├── math/               # Formel-Editor
-│   │   └── citations/          # Zitat-Suche
+│   │   ├── editor/             # Editor container, toolbar, dialogs
+│   │   ├── dashboard/          # Dashboard UI
+│   │   ├── templates/          # Template gallery
+│   │   ├── math/               # Formula editor
+│   │   └── citations/          # Citation search
 │   │
 │   ├── hooks/                  # useEditor, useAutoSave, useCollaboration, ...
 │   ├── lib/
-│   │   ├── auth.ts             # NextAuth-Konfiguration
-│   │   ├── db.ts               # Prisma Client
-│   │   ├── editor/extensions/  # Custom TipTap-Extensions (Math, Footnote, ...)
-│   │   ├── templates/          # 8 Dokumentvorlagen
-│   │   └── typst/              # Serializer + WASM-Worker
-│   ├── stores/                 # Zustand Stores
-│   └── generated/prisma/       # Prisma-generierter Client
+│   │   ├── auth.ts             # NextAuth configuration
+│   │   ├── db.ts               # Prisma client
+│   │   ├── editor/extensions/  # Custom TipTap extensions
+│   │   ├── templates/          # Document templates
+│   │   └── typst/              # Serializer and WASM worker
+│   ├── stores/                 # Zustand stores
+│   └── generated/prisma/       # Prisma-generated client
 │
 ├── server/
-│   └── collaboration.ts        # Hocuspocus WebSocket-Server
+│   └── collaboration.ts        # Hocuspocus WebSocket server
 │
 ├── prisma/
-│   └── schema.prisma           # Datenbankschema
+│   └── schema.prisma           # Database schema
 │
-├── messages/                   # i18n-Übersetzungen (de, en)
-└── public/                     # Statische Assets & WASM-Dateien
+├── messages/                   # i18n messages (de, en)
+└── public/                     # Static assets and WASM files
 ```
 
-### Datenmodell
+### Data Model
 
 ```mermaid
 erDiagram
@@ -301,103 +306,108 @@ erDiagram
     }
 ```
 
-### Datenfluss: Editor → PDF
+### Data Flow: Editor To Preview And Export
 
 ```
-TipTap-JSON ──► serializer.ts ──► Typst-Quellcode ──► WASM-Worker ──► SVG/PDF ──► Preview
+TipTap JSON ──► serializer.ts ──► Typst source ──► WASM worker ──► SVG/PDF output
 ```
 
-1. Der **Editor** erzeugt bei jeder Änderung ein ProseMirror-JSON
-2. Der **Serializer** (`src/lib/typst/serializer.ts`) übersetzt dieses JSON nach Typst
-3. Ein **Web Worker** kompiliert den Typst-Quellcode via WASM (kein Server-Roundtrip nötig)
-4. Die **Vorschau** zeigt das gerenderte Ergebnis als SVG oder PDF
+1. The **editor** produces ProseMirror JSON on every change.
+2. The **serializer** (`src/lib/typst/serializer.ts`) converts that JSON into Typst.
+3. A **Web Worker** compiles the Typst source through WASM without a server roundtrip.
+4. The **preview and export layer** renders SVG for live preview and PDF for export.
 
 ---
 
-## 📚 Vorlagen
+## 📚 Templates
 
-ladoc enthält **8 professionelle Vorlagen**, alle lokalisiert und direkt einsatzbereit:
+ladoc currently ships with **8 professional templates**, localized and ready to use:
 
-| Vorlage | Beschreibung |
-|---|---|
-| 🎓 **Abschlussarbeit** | Titelseite, Abstract, 6 Kapitel, Literaturverzeichnis |
-| 👤 **Lebenslauf** | Profil, Berufserfahrung, Ausbildung, Skills, Zertifikate |
-| ✉️ **Brief** | DIN-5008-konformer Geschäftsbrief mit Referenzzeile |
-| 📊 **Bericht** | Executive Summary, Inhaltsverzeichnis, Analyse, Empfehlungen |
-| 🎤 **Präsentation** | Folien im Querformat mit Agenda und Inhaltsfolien |
-| 📖 **Buch** | Schmutztitel, Haupttitel, Widmung, Kapitel, Nachwort |
-| 🧾 **Rechnung** | Absender, Empfänger, Positionen, USt, Bankverbindung |
-| 📋 **Sitzungsprotokoll** | Teilnehmer, TOPs, Beschlüsse, Aufgabenliste |
+| Template               | Description                                                     |
+| ---------------------- | --------------------------------------------------------------- |
+| 🎓 **Thesis**          | Title page, abstract, six chapters, references                  |
+| 👤 **Resume**          | Profile, work experience, education, skills, certifications     |
+| ✉️ **Letter**          | DIN 5008-style business letter with reference line              |
+| 📊 **Report**          | Executive summary, table of contents, analysis, recommendations |
+| 🎤 **Presentation**    | Landscape slides with agenda and content sections               |
+| 📖 **Book**            | Half-title, main title, dedication, chapters, afterword         |
+| 🧾 **Invoice**         | Sender, recipient, line items, VAT, bank details                |
+| 📋 **Meeting Minutes** | Participants, agenda items, decisions, action list              |
 
-Eine eigene Vorlage hinzufügen? Lege eine neue Datei unter `src/lib/templates/` an und registriere sie in `src/lib/templates/index.ts`.
+Want to add your own template? Create a new file in `src/lib/templates/` and register it in `src/lib/templates/index.ts`.
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] Visueller Editor mit Live-PDF-Vorschau
-- [x] 8 professionelle Vorlagen
-- [x] Auto-Save & Versionshistorie
-- [x] Authentifizierung (E-Mail, GitHub, Google)
-- [x] Deutsch & Englisch
-- [ ] Mobile-App (PWA)
-- [ ] Kommentare & Review-Modus
-- [ ] KI-gestütztes Schreiben (Autocomplete, Umformulierung)
-- [ ] Mehr Sprachen (FR, ES, IT)
-- [ ] LaTeX-Import
-- [ ] Custom-Theme-Editor für Vorlagen
-- [ ] Integration mit Cloud-Speicher (Dropbox, Google Drive)
+- [x] Visual editor with live Typst preview
+- [x] Eight professional document templates
+- [x] Autosave, version history, and soft delete with restore
+- [x] Authentication with email/password and OAuth providers
+- [x] German and English localization
+- [x] Real-time collaboration with live cursors
+- [x] PDF, SVG, Typst, plain text, and LaTeX export
+- [ ] Comments and review mode
+- [ ] Proper bibliography support for Typst citations
+- [ ] Stronger asset pipeline for uploaded images across preview and export
+- [ ] PWA support and mobile polish
+- [ ] AI-assisted writing tools
+- [ ] More languages (FR, ES, IT)
+- [ ] LaTeX import
+- [ ] Custom theme editor for templates
+- [ ] Cloud storage integrations (Dropbox, Google Drive)
 
 ---
 
-## 🤝 Mitwirken
+## 🤝 Contributing
 
-Beiträge sind willkommen! So kannst du helfen:
+Contributions are welcome. A typical workflow looks like this:
 
-1. **Fork** das Repository
-2. Erstelle einen **Feature-Branch** (`git checkout -b feature/AmazingFeature`)
-3. **Committe** deine Änderungen (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** den Branch (`git push origin feature/AmazingFeature`)
-5. Öffne einen **Pull Request**
+1. **Fork** the repository
+2. Create a **feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** the branch (`git push origin feature/AmazingFeature`)
+5. Open a **Pull Request**
 
-### Code-Style
+### Code Style
 
-- Code wird mit **Prettier** formatiert (`npm run format`)
-- Linting über **ESLint** (`npm run lint`)
-- Tests mit **Vitest** (`npm run test`)
-- Commits folgen [Conventional Commits](https://www.conventionalcommits.org)
+- Format code with **Prettier** (`npm run format`)
+- Run **ESLint** before submitting (`npm run lint`)
+- Run **Vitest** for tests (`npm run test`)
+- Commits follow [Conventional Commits](https://www.conventionalcommits.org)
 
-### Fehler melden
+### Reporting Bugs
 
-Öffne ein [GitHub Issue](https://github.com/<dein-user>/ladoc/issues) mit:
-- Kurzer Beschreibung des Problems
-- Schritten zur Reproduktion
-- Erwartetem & tatsächlichem Verhalten
-- Screenshots (falls relevant)
+Open a [GitHub Issue](https://github.com/<your-user>/ladoc/issues) and include:
 
----
-
-## 📄 Lizenz
-
-Verteilt unter der **MIT-Lizenz**. Siehe [`LICENSE`](./LICENSE) für Details.
+- a short problem description
+- steps to reproduce
+- expected behavior and actual behavior
+- screenshots if relevant
 
 ---
 
-## 🙏 Danksagung
+## 📄 License
 
-ladoc steht auf den Schultern großartiger Open-Source-Projekte:
+Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
-- [Typst](https://typst.app) — das moderne Satzsystem, das alles möglich macht
-- [TipTap](https://tiptap.dev) — der headless Editor auf ProseMirror-Basis
-- [Next.js](https://nextjs.org) — das React-Framework
-- [Yjs](https://yjs.dev) — CRDTs für Echtzeit-Kollaboration
-- [@myriaddreamin/typst.ts](https://github.com/Myriad-Dreamin/typst.ts) — Typst im Browser
-- [Prisma](https://www.prisma.io), [NextAuth](https://authjs.dev), [Radix UI](https://www.radix-ui.com) und viele mehr
+---
+
+## 🙏 Acknowledgements
+
+ladoc stands on the shoulders of great open-source projects:
+
+- [Typst](https://typst.app) for the modern typesetting engine
+- [TipTap](https://tiptap.dev) for the headless ProseMirror-based editor
+- [Next.js](https://nextjs.org) for the application framework
+- [Yjs](https://yjs.dev) for CRDT-based real-time collaboration
+- [@myriaddreamin/typst.ts](https://github.com/Myriad-Dreamin/typst.ts) for running Typst in the browser
+- [Prisma](https://www.prisma.io), [NextAuth](https://authjs.dev), [Radix UI](https://www.radix-ui.com), and many more
 
 <div align="center">
 
-**Wenn dir ladoc gefällt, gib dem Projekt einen ⭐ auf GitHub!**
+**If you like ladoc, give the project a star on GitHub.**
 
-Made with ❤️ in Deutschland
+Made with love in Germany
 
 </div>
