@@ -116,153 +116,149 @@ ladoc is built around a simple idea:
 
 ### Document pipeline
 
-
+```text
 TipTap JSON -> serializer -> Typst source -> WASM worker -> preview/export
+```
 
 1. The editor produces structured document content.
-
-
 2. ladoc serializes that content into Typst.
-
-
 3. Typst is compiled in the browser through WASM.
-
-
 4. The output is used for preview and export.
-
-
 
 This architecture makes it possible to preserve a visual editing workflow while still producing high-quality documents.
 
-Tech stack
+## Tech stack
 
-Area	Technology
+| Area | Technology |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org) |
+| UI | [React 19](https://react.dev) |
+| Language | [TypeScript 5](https://www.typescriptlang.org) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com) |
+| Editor | [TipTap v3](https://tiptap.dev) |
+| Typesetting | [Typst](https://typst.app) via [`@myriaddreamin/typst.ts`](https://github.com/Myriad-Dreamin/typst.ts) |
+| Collaboration | [Yjs](https://yjs.dev) + [Hocuspocus](https://tiptap.dev/hocuspocus) |
+| Database | [PostgreSQL](https://www.postgresql.org) |
+| ORM | [Prisma 7](https://www.prisma.io) |
+| Authentication | [Auth.js / NextAuth v5](https://authjs.dev) |
+| State | [Zustand](https://zustand.docs.pmnd.rs) |
+| i18n | [next-intl](https://next-intl.dev) |
+| Testing | [Vitest](https://vitest.dev) + Testing Library |
 
-Framework	Next.js 16
-UI	React 19
-Language	TypeScript 5
-Styling	Tailwind CSS 4
-Editor	TipTap v3
-Typesetting	Typst via @myriaddreamin/typst.ts
-Collaboration	Yjs + Hocuspocus
-Database	PostgreSQL
-ORM	Prisma 7
-Authentication	Auth.js / NextAuth v5
-State	Zustand
-i18n	next-intl
-Testing	Vitest + Testing Library
-
-
-Templates
+## Templates
 
 ladoc includes templates for common professional document types:
 
-Thesis
+- Thesis
+- Resume
+- Letter
+- Report
+- Presentation
+- Book
+- Invoice
+- Meeting minutes
 
-Resume
+Custom templates can be added in `src/lib/templates/`.
 
-Letter
+## Quick start
 
-Report
+### Requirements
 
-Presentation
+- Node.js >= 20
+- PostgreSQL >= 14
+- npm, pnpm, or yarn
 
-Book
+### Clone the repository
 
-Invoice
-
-Meeting minutes
-
-
-Custom templates can be added in src/lib/templates/.
-
-Quick start
-
-Requirements
-
-Node.js >= 20
-
-PostgreSQL >= 14
-
-npm, pnpm, or yarn
-
-
-Clone the repository
-
+```bash
 git clone https://github.com/Hamido212/ladoc.git
 cd ladoc
+```
 
-Install dependencies
+### Install dependencies
 
+```bash
 npm install
+```
 
-Configure environment variables
+### Configure environment variables
 
+```bash
 cp .env.example .env
+```
 
 Set at least the following values:
 
+```env
 DATABASE_URL="postgresql://ladoc:ladoc_dev@localhost:5432/ladoc"
 AUTH_SECRET="<generate-with-openssl-rand-hex-32>"
 NEXTAUTH_URL="http://localhost:3000"
+```
 
 Generate a secure secret with:
 
+```bash
 openssl rand -hex 32
+```
 
-Initialize the database
+### Initialize the database
 
+```bash
 npx prisma migrate dev
 npx prisma generate
+```
 
-Start the development server
+### Start the development server
 
+```bash
 npm run dev
+```
 
-Open http://localhost:3000.
+Open `http://localhost:3000`.
 
-Start the collaboration server (optional)
+### Start the collaboration server (optional)
 
+```bash
 npm run collab
+```
 
-The collaboration server listens on ws://localhost:1234 by default.
+The collaboration server listens on `ws://localhost:1234` by default.
 
-Configuration
+## Configuration
 
-A complete environment template is available in .env.example.
+A complete environment template is available in [`.env.example`](./.env.example).
 
-Variable	Description	Example
+| Variable | Description | Example |
+|---|---|---|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/ladoc` |
+| `AUTH_SECRET` | Secret used for authentication | `openssl rand -hex 32` |
+| `NEXTAUTH_URL` | Base URL of the application | `http://localhost:3000` |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | GitHub OAuth credentials | — |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth credentials | — |
+| `NEXT_PUBLIC_COLLAB_URL` | Hocuspocus WebSocket endpoint | `ws://localhost:1234` |
+| `S3_ENDPOINT` | S3-compatible storage endpoint | `http://localhost:9000` |
+| `S3_ACCESS_KEY` | Storage access key | — |
+| `S3_SECRET_KEY` | Storage secret key | — |
+| `S3_BUCKET` | Storage bucket name | `ladoc-assets` |
+| `S3_PUBLIC_URL` | Public asset base URL | `http://localhost:9000/ladoc-assets` |
 
-DATABASE_URL	PostgreSQL connection string	postgresql://user:pass@localhost:5432/ladoc
-AUTH_SECRET	Secret used for authentication	openssl rand -hex 32
-NEXTAUTH_URL	Base URL of the application	http://localhost:3000
-AUTH_GITHUB_ID / AUTH_GITHUB_SECRET	GitHub OAuth credentials	—
-AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET	Google OAuth credentials	—
-NEXT_PUBLIC_COLLAB_URL	Hocuspocus WebSocket endpoint	ws://localhost:1234
-S3_ENDPOINT	S3-compatible storage endpoint	http://localhost:9000
-S3_ACCESS_KEY	Storage access key	—
-S3_SECRET_KEY	Storage secret key	—
-S3_BUCKET	Storage bucket name	ladoc-assets
-S3_PUBLIC_URL	Public asset base URL	http://localhost:9000/ladoc-assets
+## Scripts
 
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start the production server |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format the codebase |
+| `npm run format:check` | Check formatting |
+| `npm run test` | Run tests |
+| `npm run test:coverage` | Run tests with coverage |
+| `npm run collab` | Start the collaboration server |
 
-Scripts
+## Project structure
 
-Command	Description
-
-npm run dev	Start the development server
-npm run build	Build for production
-npm run start	Start the production server
-npm run lint	Run ESLint
-npm run format	Format the codebase
-npm run format:check	Check formatting
-npm run test	Run tests
-npm run test:coverage	Run tests with coverage
-npm run collab	Start the collaboration server
-
-
-Project structure
-
+```text
 ladoc/
 ├── src/
 │   ├── app/                  # Next.js App Router
@@ -275,94 +271,61 @@ ladoc/
 ├── prisma/                   # Database schema
 ├── messages/                 # i18n messages
 └── public/                   # Static assets
+```
 
-Roadmap
+## Roadmap
 
-[x] Visual editor with live Typst preview
+- [x] Visual editor with live Typst preview
+- [x] Template-based document creation
+- [x] Autosave, version history, and restore
+- [x] Authentication with email/password and OAuth
+- [x] German and English localization
+- [x] Real-time collaboration with live cursors
+- [x] Export to PDF, SVG, Typst, plain text, and LaTeX
+- [ ] Comments and review mode
+- [ ] Improved bibliography and citation workflows
+- [ ] Better asset handling for preview and export
+- [ ] PWA support and mobile polish
+- [ ] AI-assisted writing tools
+- [ ] More languages
+- [ ] LaTeX import
+- [ ] Custom theme editor
+- [ ] Cloud storage integrations
 
-[x] Template-based document creation
-
-[x] Autosave, version history, and restore
-
-[x] Authentication with email/password and OAuth
-
-[x] German and English localization
-
-[x] Real-time collaboration with live cursors
-
-[x] Export to PDF, SVG, Typst, plain text, and LaTeX
-
-[ ] Comments and review mode
-
-[ ] Improved bibliography and citation workflows
-
-[ ] Better asset handling for preview and export
-
-[ ] PWA support and mobile polish
-
-[ ] AI-assisted writing tools
-
-[ ] More languages
-
-[ ] LaTeX import
-
-[ ] Custom theme editor
-
-[ ] Cloud storage integrations
-
-
-Contributing
+## Contributing
 
 Contributions are welcome.
 
 1. Fork the repository
-
-
 2. Create a feature branch
-
-
 3. Commit your changes
-
-
 4. Push the branch
-
-
 5. Open a pull request
-
-
 
 Before submitting changes:
 
-run formatting with npm run format
+- run formatting with `npm run format`
+- run linting with `npm run lint`
+- run tests with `npm run test`
 
-run linting with npm run lint
+## License
 
-run tests with npm run test
+This project is licensed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
-
-License
-
-This project is licensed under the MIT License. See LICENSE for details.
-
-Acknowledgements
+## Acknowledgements
 
 ladoc builds on top of excellent open-source tools, especially:
 
-Typst
+- [Typst](https://typst.app)
+- [TipTap](https://tiptap.dev)
+- [Yjs](https://yjs.dev)
+- [Hocuspocus](https://tiptap.dev/hocuspocus)
+- [Next.js](https://nextjs.org)
+- [Prisma](https://www.prisma.io)
+- [Auth.js](https://authjs.dev)
 
-TipTap
+<div align="center">
 
-Yjs
-
-Hocuspocus
-
-Next.js
-
-Prisma
-
-Auth.js
-
-
-<div align="center">If you find ladoc useful, consider giving it a star.
+**If you find ladoc useful, consider giving it a star.**
 
 </div>
